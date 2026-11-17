@@ -539,6 +539,9 @@
         render();
         $('coachPrompt').innerHTML = '<strong class="block text-slate-900 mb-1">Welcome to your speaking session!</strong>Let’s speak English together. Press “Dengarkan soal” when you are ready.';
         
+        // Otomatis scroll ke atas agar tampilan HP tidak nyangkut di bawah
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        
         setTimeout(() => {
             if(speechSupported) setVoice('Hello ' + ($('studentName').value.trim()||'there') + '. Welcome to your English speaking practice. Let us begin!', 'en-GB');
         }, 120);
@@ -619,6 +622,9 @@
         if(pos + delta >= session.length){ finish(); return; }
         pos += delta;
         render();
+        
+        // Saat pindah soal, otomatis scroll ke atas juga (sangat berguna di HP)
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function finish(){
