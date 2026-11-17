@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Speaking Tutor | Elementary 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations & minor tweaks */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .live-dot {
+            animation: pulse-ring 2s infinite;
+        }
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        textarea::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        textarea::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen">
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white rounded-3xl p-8 shadow-xl relative overflow-hidden mb-6">
+        <div class="absolute -right-12 -top-12 w-64 h-64 border-[30px] border-teal-500/20 rounded-full pointer-events-none"></div>
+        <div class="relative z-10">
+            <div class="text-teal-300 font-bold tracking-widest text-xs uppercase mb-2">Smart Speaking Lab · Elementary 2</div>
+            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight max-w-2xl mb-4">Practise speaking with your own English tutor.</h1>
+            <p class="text-slate-300 max-w-3xl mb-6 text-sm md:text-base">
+                Tutor virtual akan membacakan soal, mendengarkan jawabanmu, memberi koreksi secara lisan, dan menyemangatimu ketika pola grammar sudah benar.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">🎧 Listen</span>
+                <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">🎙️ Speak</span>
+                <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/20 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">⭐ Feedback & encouragement</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Setup Section -->
+    <section id="setupSection" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-6">
+        <h2 class="text-xl font-bold mb-1">Siap mulai belajar?</h2>
+        <p class="text-slate-500 text-sm mb-5">Duduk seperti sedang berhadapan dengan tutor. Jawab dengan suara jelas dalam bahasa Inggris. Kamu juga bisa mengetik jawaban jika mikrofon tidak tersedia.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+                <label for="studentName" class="block text-sm font-bold text-slate-700 mb-1">Nama siswa (opsional)</label>
+                <input id="studentName" type="text" placeholder="Nama kamu" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all">
+            </div>
+            <div>
+                <label for="mode" class="block text-sm font-bold text-slate-700 mb-1">Mode belajar</label>
+                <select id="mode" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all bg-white">
+                    <option value="coach">Tutor Mode · koreksi setiap jawaban</option>
+                    <option value="test">Mock Test · tanpa petunjuk</option>
+                </select>
+            </div>
+            <div>
+                <label for="topicSelect" class="block text-sm font-bold text-slate-700 mb-1">Materi</label>
+                <select id="topicSelect" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all bg-white">
+                    <option value="all">Semua materi · 27 soal</option>
+                    <option value="ppc">A. Present Perfect Continuous</option>
+                    <option value="pastpc">B. Past Perfect Continuous</option>
+                    <option value="pfs">C. Past Future Simple</option>
+                    <option value="pfcont">D. Past Future Continuous</option>
+                    <option value="passive">E. Passive Voice</option>
+                    <option value="so">F. So / Too</option>
+                    <option value="neither">G. Neither / Either</option>
+                    <option value="comparison">H. Degree of Comparison</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mb-4">
+            <button id="startBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-5 rounded-xl transition-colors flex items-center gap-2 shadow-sm">
+                ▶ Mulai sesi dengan tutor
+            </button>
+            <button id="howBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-5 rounded-xl border border-slate-200 transition-colors">
+                Cara menggunakan
+            </button>
+        </div>
+
+        <div id="browserNotice" class="hidden bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-xl text-sm mt-4">
+            Fitur suara memerlukan browser yang mendukung Speech Recognition. Gunakan Google Chrome atau Microsoft Edge, izinkan akses mikrofon, dan pastikan koneksi internet tersedia.
+        </div>
+
+        <div id="howText" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600 mt-4">
+            <h3 class="font-bold text-slate-800 mb-2">Alur belajar</h3>
+            <ol class="list-decimal pl-5 space-y-1">
+                <li>Tekan <strong>“Dengarkan soal”</strong>.</li>
+                <li>Jawab secara lisan melalui mikrofon atau ketik jawaban.</li>
+                <li>Tekan <strong>“Periksa jawaban”</strong>.</li>
+                <li>Dengarkan pujian atau koreksi tutor.</li>
+                <li>Ulangi jawaban jika perlu, lalu lanjut ke soal berikutnya.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Main Workspace (Hidden initially) -->
+    <div id="workspace" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        
+        <!-- Left/Main Area: Lesson Card -->
+        <main class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm min-h-[500px] flex flex-col">
+            <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
+                <span id="sectionTag" class="bg-teal-50 text-teal-700 font-bold text-xs px-3 py-1.5 rounded-lg uppercase tracking-wider">A. Present Perfect Continuous</span>
+                <span id="questionCount" class="text-slate-500 font-bold text-sm">Soal 1 dari 27</span>
+            </div>
+            
+            <div class="w-full bg-slate-100 rounded-full h-2.5 mb-6">
+                <div id="progressBar" class="bg-teal-500 h-2.5 rounded-full transition-all duration-300" style="width: 5%"></div>
+            </div>
+
+            <div id="coachPrompt" class="bg-blue-50 border-l-4 border-amber-400 p-4 rounded-r-xl text-sm text-slate-700 mb-6">
+                <strong class="block text-slate-900 mb-1">Welcome!</strong>
+                Tekan “Mulai sesi dengan tutor” untuk memulai latihan.
+            </div>
+
+            <h2 id="questionText" class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight mb-6">
+                What have you been doing for the last 30 minutes?
+            </h2>
+
+            <!-- NEW: Example Answer Block -->
+            <div id="exampleBlock" class="mb-6 bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-indigo-900 text-sm flex items-center gap-2">💡 Contoh Jawaban (AI)</span>
+                    <button id="toggleExampleBtn" class="bg-indigo-200 text-indigo-800 hover:bg-indigo-300 font-bold py-1.5 px-4 rounded-lg text-xs transition-colors">
+                        Tampilkan
+                    </button>
+                </div>
+                <div id="exampleContent" class="hidden mt-3 pt-3 border-t border-indigo-200/60">
+                    <p id="exampleTextDisplay" class="text-xl font-bold text-indigo-950 mb-3"></p>
+                    <button id="speakExampleBtn" class="bg-white border border-indigo-300 text-indigo-700 hover:bg-indigo-50 font-bold py-2 px-4 rounded-xl text-sm transition-colors flex items-center gap-2 shadow-sm">
+                        🔊 Dengarkan Pengucapan AI
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mb-6">
+                <button id="speakQuestion" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 px-4 rounded-xl flex items-center gap-2 transition-colors">
+                    🔊 Dengarkan soal
+                </button>
+                <button id="micBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-4 rounded-xl flex items-center gap-2 transition-colors">
+                    🎙️ Jawab dengan suara
+                </button>
+                <button id="stopMicBtn" disabled class="bg-red-100 text-red-700 hover:bg-red-200 font-bold py-2.5 px-4 rounded-xl flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    ■ Berhenti
+                </button>
+            </div>
+
+            <div id="listeningState" class="hidden bg-teal-50 text-teal-800 text-sm font-bold p-3 rounded-xl mb-4 flex items-center gap-3">
+                <div class="w-2.5 h-2.5 bg-red-500 rounded-full live-dot"></div>
+                Tutor sedang mendengarkan. Silakan jawab dalam bahasa Inggris…
+            </div>
+
+            <div class="mb-6 flex-grow">
+                <label class="block text-sm font-bold text-slate-700 mb-2" for="answerText">Jawaban yang didengar tutor (boleh diperbaiki)</label>
+                <textarea id="answerText" class="w-full min-h-[120px] border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all resize-y text-lg" placeholder="Jawabanmu akan muncul di sini setelah berbicara. Kamu juga bisa mengetik jawaban..."></textarea>
+                <p class="text-xs text-slate-500 mt-2">Jika hasil pengenalan suara tidak tepat, edit teksnya sebelum diperiksa.</p>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mb-6">
+                <button id="checkBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-5 rounded-xl transition-colors">
+                    ✓ Periksa jawaban
+                </button>
+                <button id="repeatBtn" class="bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 font-bold py-2.5 px-5 rounded-xl transition-colors">
+                    ↻ Coba jawab lagi
+                </button>
+            </div>
+
+            <!-- Feedback Area -->
+            <div id="feedback" class="hidden border-2 rounded-xl p-5 mb-6 transition-all" aria-live="polite">
+                <h3 id="feedbackTitle" class="font-extrabold text-lg mb-2"></h3>
+                <p id="feedbackText" class="text-sm mb-4"></p>
+                <p id="modelText" class="font-bold text-slate-900 text-lg mb-2"></p>
+                <p id="explanationText" class="text-sm text-slate-600 mb-4"></p>
+                
+                <div class="flex flex-wrap gap-3 mb-3">
+                    <button id="repeatModelBtn" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold py-2 px-4 rounded-lg text-sm transition-colors">
+                        🔊 Dengarkan contoh & ulangi
+                    </button>
+                    <button id="sayFeedbackBtn" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold py-2 px-4 rounded-lg text-sm transition-colors">
+                        🔊 Dengarkan koreksi lagi
+                    </button>
+                </div>
+                
+                <p id="speechStatus" class="text-xs text-slate-500 mb-4">Tutor akan menyampaikan masukan secara lisan.</p>
+                
+                <div id="manualControls" class="hidden bg-slate-50 p-3 rounded-lg border border-slate-200 flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-bold text-slate-600">Manual Override:</span>
+                    <button id="markCorrectBtn" class="bg-green-100 text-green-700 hover:bg-green-200 font-bold py-1.5 px-3 rounded-md text-xs transition-colors">Tandai Benar</button>
+                    <button id="markRetryBtn" class="bg-amber-100 text-amber-700 hover:bg-amber-200 font-bold py-1.5 px-3 rounded-md text-xs transition-colors">Minta Perbaikan</button>
+                </div>
+            </div>
+
+            <!-- Footer Controls -->
+            <div class="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-4">
+                <button id="prevBtn" disabled class="text-slate-600 font-bold py-2 px-4 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    ← Sebelumnya
+                </button>
+                <span id="progressText" class="text-xs text-slate-500 font-medium text-center">Jawaban tersimpan selama sesi ini.</span>
+                <button id="nextBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-xl transition-colors shadow-sm">
+                    Berikutnya →
+                </button>
+            </div>
+        </main>
+
+        <!-- Right/Sidebar Area -->
+        <aside class="lg:col-span-1 space-y-6">
+            <!-- Stats -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-lg text-slate-900 mb-1">Student Progress</h2>
+                <p class="text-xs text-slate-500 mb-4">Lihat perjalanan latihanmu.</p>
+                
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <strong id="doneStat" class="block text-2xl font-black text-slate-800">0/27</strong>
+                        <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Dijawab</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <strong id="correctStat" class="block text-2xl font-black text-teal-600">0</strong>
+                        <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Benar</span>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                        <strong id="streakStat" class="block text-2xl font-black text-amber-500">0</strong>
+                        <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Streak</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topics -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-lg text-slate-900 mb-1">Jump to a topic</h2>
+                <p class="text-xs text-slate-500 mb-3">Tekan materi untuk berlatih bagian tertentu.</p>
+                <div id="topicList" class="flex flex-col gap-2 max-h-64 overflow-y-auto pr-1">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <!-- Hints -->
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 shadow-sm">
+                <h3 class="font-bold text-amber-900 text-sm mb-2 flex items-center gap-2">💡 Grammar focus</h3>
+                <div id="grammarRule" class="text-sm text-amber-800 bg-amber-100/50 p-2 rounded-lg font-mono">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5 shadow-sm">
+                <h3 class="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2">🧠 Remember</h3>
+                <p class="text-xs text-blue-800 leading-relaxed">
+                    Tidak apa-apa membuat kesalahan. Dengarkan koreksi, ulangi kalimatnya, dan coba lagi. Good learners keep practising!
+                </p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Results Panel (Hidden initially) -->
+    <section id="resultsPanel" class="hidden bg-white border border-slate-200 rounded-2xl p-8 shadow-sm text-center">
+        <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-4xl">🎉</span>
+        </div>
+        <h2 id="resultsTitle" class="text-3xl font-extrabold text-slate-900 mb-3">Great effort!</h2>
+        <p id="resultsSummary" class="text-slate-600 max-w-2xl mx-auto mb-8"></p>
+        
+        <div class="flex justify-center gap-4 mb-8">
+            <button id="reviewBtn" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                Tinjau jawaban
+            </button>
+            <button id="restartBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                ↻ Mulai sesi baru
+            </button>
+        </div>
+
+        <div id="resultList" class="hidden text-left bg-slate-50 border border-slate-200 rounded-xl p-6 space-y-4 max-w-4xl mx-auto">
+            <!-- Injected via JS -->
+        </div>
+    </section>
+
+    <!-- Footer Note -->
+    <p class="text-center text-xs text-slate-400 mt-12 max-w-3xl mx-auto">
+        Catatan: Materi mengikuti 27 prompt dalam dokumen Speaking Test Elementary 2. Pemeriksaan otomatis berfokus pada pola grammar dan dapat keliru menangani aksen, transkripsi mikrofon, atau jawaban alternatif yang valid. Tutor/orang tua tetap dapat mengoreksi secara manual. Tidak ada rekaman suara yang disimpan oleh aplikasi ini.
+    </p>
+
+</div>
+
+<script>
+(function(){
+    'use strict';
+
+    // Elements
+    const $ = id => document.getElementById(id);
+    
+    // Data Bank (Sesuai dengan sumber Elementary 2)
+    const bank=[
+        {id:1,topic:'ppc',section:'A. Present Perfect Continuous',q:'What have you been doing for the last 30 minutes?',rule:'have/has been + verb-ing',hint:'Sebutkan kegiatan yang kamu lakukan selama 30 menit terakhir.',model:'I have been studying English for the last 30 minutes.',explain:'Gunakan have/has been diikuti kata kerja berakhiran -ing.',kind:'ppc'},
+        {id:2,topic:'ppc',section:'A. Present Perfect Continuous',q:'How long have you been studying English?',rule:'How long + have/has + subject + been + verb-ing?',hint:'Jawab dengan durasi menggunakan for atau titik awal menggunakan since.',model:'I have been studying English for two years.',explain:'For diikuti durasi (for two years). Since diikuti titik awal (since 2024).',kind:'ppc_duration'},
+        {id:3,topic:'ppc',section:'A. Present Perfect Continuous',q:'Your friend looks tired after running. Ask your friend a question using “have been”.',rule:'Have/Has + subject + been + verb-ing?',hint:'Buat pertanyaan kepada teman yang terlihat lelah setelah berlari.',model:'Have you been running?',explain:'Letakkan have/has di depan subjek: Have you been running?',kind:'ppc_question'},
+        {id:4,topic:'pastpc',section:'B. Past Perfect Continuous',q:'What had you been doing for one hour before dinner yesterday?',rule:'had been + verb-ing',hint:'Bayangkan kegiatan yang berlangsung satu jam sebelum makan malam kemarin.',model:'I had been doing my homework for one hour before dinner yesterday.',explain:'Had been + verb-ing menggambarkan kegiatan berdurasi yang terjadi sebelum kejadian lain di masa lampau.',kind:'pastpc'},
+        {id:5,topic:'pastpc',section:'B. Past Perfect Continuous',q:'Ask me how long I had been waiting before the class started.',rule:'How long + had + subject + been + verb-ing?',hint:'Buat pertanyaan tentang lamanya menunggu sebelum kelas dimulai.',model:'How long had you been waiting before the class started?',explain:'Dalam pertanyaan ini, gunakan susunan How long + had + subject + been + verb-ing.',kind:'pastpc_question'},
+        {id:6,topic:'pfs',section:'C. Past Future Simple',q:'Imagine you planned to visit your cousin last Sunday. Ask your cousin about the visit using “would”.',rule:'would + verb 1',hint:'Buat pertanyaan yang memakai would tentang kunjungan yang direncanakan.',model:'Would you visit me last Sunday?',explain:'would + kata kerja dasar.',kind:'would_question'},
+        {id:7,topic:'pfs',section:'C. Past Future Simple',q:'Make a sentence using “would + verb 1” about a plan you had yesterday.',rule:'would + verb 1',hint:'Ceritakan rencana yang kamu miliki kemarin.',model:'I thought I would play football yesterday.',explain:'Would diikuti kata kerja bentuk dasar, misalnya would play, would go.',kind:'would_statement'},
+        {id:8,topic:'pfcont',section:'D. Past Future Continuous',q:'What would you be doing at 7 p.m. yesterday?',rule:'would be + verb-ing',hint:'Sebutkan kegiatan yang diperkirakan sedang berlangsung pada waktu itu.',model:'I would be doing my homework at 7 p.m. yesterday.',explain:'Pola utamanya adalah would be diikuti verb-ing.',kind:'would_be_ing'},
+        {id:9,topic:'pfcont',section:'D. Past Future Continuous',q:'Ask your friend what they would be doing at this time yesterday.',rule:'What + would + subject + be + verb-ing?',hint:'Tanyakan kegiatan yang diperkirakan sedang berlangsung kemarin.',model:'What would you be doing at this time yesterday?',explain:'Saat bertanya, gunakan what + would + subjek + be + verb-ing.',kind:'would_question_cont'},
+        {id:10,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “People clean our classroom every day.”',rule:'Simple Present passive: am/is/are + V3',hint:'Ubah objek our classroom menjadi subjek kalimat pasif.',model:'Our classroom is cleaned every day.',explain:'Simple Present passive menggunakan am/is/are + past participle (V3).',kind:'passive10'},
+        {id:11,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “The teacher is checking the homework now.”',rule:'Present Continuous passive: am/is/are being + V3',hint:'Pertahankan makna bahwa kegiatan sedang berlangsung sekarang.',model:'The homework is being checked by the teacher now.',explain:'Present Continuous passive menggunakan is/are being + V3.',kind:'passive11'},
+        {id:12,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “They have finished the project.”',rule:'Present Perfect passive: has/have been + V3',hint:'Mulailah kalimat dengan the project.',model:'The project has been finished.',explain:'Present Perfect passive menggunakan has/have been + V3.',kind:'passive12'},
+        {id:13,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “The students visited the museum yesterday.”',rule:'Simple Past passive: was/were + V3',hint:'Pertahankan keterangan yesterday.',model:'The museum was visited by the students yesterday.',explain:'Simple Past passive menggunakan was/were + V3.',kind:'passive13'},
+        {id:14,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “They were washing the car at 5 p.m.”',rule:'Past Continuous passive: was/were being + V3',hint:'Perhatikan kegiatan yang sedang berlangsung pada waktu lampau.',model:'The car was being washed at 5 p.m.',explain:'Past Continuous passive menggunakan was/were being + V3.',kind:'passive14'},
+        {id:15,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “The chef had prepared the meal before noon.”',rule:'Past Perfect passive: had been + V3',hint:'Mulailah dengan the meal.',model:'The meal had been prepared by the chef before noon.',explain:'Past Perfect passive menggunakan had been + V3.',kind:'passive15'},
+        {id:16,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “They will announce the winner tomorrow.”',rule:'Simple Future passive: will be + V3',hint:'Pertahankan keterangan tomorrow.',model:'The winner will be announced tomorrow.',explain:'Simple Future passive menggunakan will be + V3.',kind:'passive16'},
+        {id:17,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “The team will have completed the work by Friday.”',rule:'Future Perfect passive: will have been + V3',hint:'Pertahankan batas waktu by Friday.',model:'The work will have been completed by the team by Friday.',explain:'Future Perfect passive menggunakan will have been + V3.',kind:'passive17'},
+        {id:18,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “She would deliver the package.”',rule:'Past Future Simple passive: would be + V3',hint:'Ubah objek the package menjadi subjek.',model:'The package would be delivered by her.',explain:'Would passive menggunakan would be + V3.',kind:'passive18'},
+        {id:19,topic:'passive',section:'E. Passive Voice',q:'Change into passive: “They would have finished the bridge by June.”',rule:'Past Future Perfect passive: would have been + V3',hint:'Mulailah dengan the bridge.',model:'The bridge would have been finished by June.',explain:'Would have passive menggunakan would have been + V3.',kind:'passive19'},
+        {id:20,topic:'so',section:'F. Elliptical Structure: So / Too',q:'Mira says, “I like English.” You like English too. Respond using “so”.',rule:'So + auxiliary + subject',hint:'Nyatakan bahwa kamu juga menyukai bahasa Inggris.',model:'So do I.',explain:'Untuk kata kerja like dalam Simple Present, gunakan do: So do I.',kind:'so'},
+        {id:21,topic:'so',section:'F. Elliptical Structure: So / Too',q:'Complete orally: “Mira is happy, and I ____.” Use “too”.',rule:'subject + be + adjective + too',hint:'Lengkapi kalimat dengan too.',model:'Mira is happy, and I am too.',explain:'Gunakan am untuk subjek I. Too biasanya diletakkan di akhir bagian kalimat.',kind:'too'},
+        {id:22,topic:'neither',section:'G. Elliptical Structure: Neither / Either',q:'Rafi says, “I don’t like spicy food.” You don’t like it either. Respond using “neither”.',rule:'Neither + auxiliary + subject',hint:'Nyatakan persetujuan terhadap pernyataan negatif.',model:'Neither do I.',explain:'Untuk Simple Present dengan like, gunakan do: Neither do I.',kind:'neither'},
+        {id:23,topic:'neither',section:'G. Elliptical Structure: Neither / Either',q:'Complete orally: “Rafi can’t swim, and I can’t ____.”',rule:'either di akhir kalimat negatif',hint:'Lengkapi kalimat menggunakan either.',model:'Rafi can’t swim, and I can’t either.',explain:'Either digunakan di akhir kalimat negatif untuk menyatakan “juga tidak”.',kind:'either'},
+        {id:24,topic:'comparison',section:'H. Degree of Comparison',q:'Compare two things that are equally big. Use “as ... as”.',rule:'as + adjective + as',hint:'Bandingkan dua benda yang sama besar.',model:'My bag is as big as your bag.',explain:'Pola as ... as menyatakan kesetaraan.',kind:'as_as'},
+        {id:25,topic:'comparison',section:'H. Degree of Comparison',q:'Compare English and Mathematics using “easier ... than” or “more difficult ... than”.',rule:'comparative + than',hint:'Pilih mata pelajaran.',model:'English is easier than Mathematics.',explain:'Gunakan easier than atau more difficult than.',kind:'comparative'},
+        {id:26,topic:'comparison',section:'H. Degree of Comparison',q:'Finish the sentence: “The more I practise English, ...”',rule:'The more ..., the more / less / better ...',hint:'Hubungkan latihan dengan hasil yang semakin baik.',model:'The more I practise English, the more confident I become.',explain:'Ini disebut double comparative: The more ..., the more/better/less ...',kind:'doublecomp'},
+        {id:27,topic:'comparison',section:'H. Degree of Comparison',q:'Who is the tallest person in your family? Answer using a superlative.',rule:'the + superlative adjective',hint:'Sebutkan anggota keluarga yang paling tinggi.',model:'My father is the tallest person in my family.',explain:'Gunakan the tallest atau superlatif lain yang sesuai.',kind:'superlative'}
+    ];
+
+    const topicNames = {all:'Semua materi',ppc:'A. Present Perfect Continuous',pastpc:'B. Past Perfect Continuous',pfs:'C. Past Future Simple',pfcont:'D. Past Future Continuous',passive:'E. Passive Voice',so:'F. So / Too',neither:'G. Neither / Either',comparison:'H. Degree of Comparison'};
+    
+    // State variables
+    let session = [], pos = 0, started = false, answers = {}, grades = {}, streak = 0, rec = null, listening = false, lastFeedbackSpeech = [], manualMode = false;
+    
+    // API Support check
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const speechSupported = !!window.speechSynthesis;
+    const recognitionSupported = !!SpeechRecognition;
+
+    if(!recognitionSupported){
+        $('micBtn').title = 'Browser ini belum mendukung speech recognition. Ketik jawaban di kotak teks.';
+        $('browserNotice').classList.remove('hidden');
+    }
+
+    // Helpers
+    function norm(s){
+        return (s||'').toLowerCase().replace(/[’‘]/g,"'").replace(/[^a-z0-9'\s]/g,' ').replace(/\s+/g,' ').trim();
+    }
+
+    // Evaluation Logic
+    function evaluate(item, raw){
+        const s = norm(raw);
+        const has = (re) => re.test(s);
+        let ok = false, why = '';
+        
+        if(!s || s.split(' ').length < 2) return {ok:false, why:'Jawaban belum cukup panjang. Coba jawab dengan satu kalimat lengkap.'};
+        
+        switch(item.kind){
+            case'ppc': ok = has(/\b(have|has|i've|we've|they've|you've|he's|she's|it's) been\b/) && has(/\b\w+ing\b/); break;
+            case'ppc_duration': ok = has(/\b(have|has|i've|we've|they've|you've|he's|she's) been\b/) && has(/\b\w+ing\b/) && has(/\b(for|since)\b/); break;
+            case'ppc_question': ok = has(/\b(have|has) you been\b/) && has(/\b\w+ing\b/); break;
+            case'pastpc': ok = has(/\bhad been\b/) && has(/\b\w+ing\b/); break;
+            case'pastpc_question': ok = has(/\bhow long had you been\b/) && has(/\b\w+ing\b/); break;
+            case'would_question': ok = has(/\bwould\s+(you|he|she|they|we|i)\s+\w+/); break;
+            case'would_statement': ok = has(/\bwould\s+\w+/) && !has(/\bwould be\b/) && !has(/\bwould have\b/); break;
+            case'would_be_ing': ok = has(/\bwould be\b/) && has(/\b\w+ing\b/); break;
+            case'would_question_cont': ok = has(/\bwhat would (you|they|he|she|we|i) be\b/) && has(/\b\w+ing\b/); break;
+            case'passive10': ok = has(/\b(is|are|am)\s+cleaned\b/); break;
+            case'passive11': ok = has(/\b(is|are|am) being checked\b/); break;
+            case'passive12': ok = has(/\b(has|have) been (finished|completed)\b/); break;
+            case'passive13': ok = has(/\b(was|were) visited\b/); break;
+            case'passive14': ok = has(/\b(was|were) being washed\b/); break;
+            case'passive15': ok = has(/\bhad been prepared\b/); break;
+            case'passive16': ok = has(/\bwill be announced\b/); break;
+            case'passive17': ok = has(/\bwill have been (completed|finished)\b/); break;
+            case'passive18': ok = has(/\bwould be delivered\b/); break;
+            case'passive19': ok = has(/\bwould have been (finished|completed)\b/); break;
+            case'so': ok = has(/\bso do i\b/)||has(/\bso am i\b/)||has(/\bso can i\b/); break;
+            case'too': ok = has(/\bi am too\b/)||has(/\band i am too\b/)||has(/\bi'm too\b/)||has(/\bso am i\b/); break;
+            case'neither': ok = has(/\bneither do i\b/)||has(/\bneither am i\b/)||has(/\bneither can i\b/); break;
+            case'either': ok = has(/\b(can't|cannot)\s+(swim\s+)?either\b/)||has(/\bcan't either\b/); break;
+            case'as_as': ok = has(/\bas\s+\w+\s+as\b/); break;
+            case'comparative': ok = (has(/\beasier\b/)||has(/\bmore difficult\b/)) && has(/\bthan\b/); break;
+            case'doublecomp': ok = has(/\bthe more\b/) && has(/\b(the more|the less|the better|the easier|the stronger|the happier|the more confident)\b/) && s.lastIndexOf('the more')>0; break;
+            case'superlative': ok = has(/\bthe (tallest|highest|biggest|oldest|youngest|smallest|strongest|fastest|kindest|most \w+)\b/); break;
+        }
+        
+        if(!ok){
+            if(item.kind.startsWith('passive')) why = 'Pastikan objek kalimat aktif menjadi subjek baru, lalu gunakan pola passive voice yang benar.';
+            else why = 'Periksa kembali pola grammar pada bagian “Grammar focus”, lalu coba susun kalimat lengkap.';
+        }
+        return {ok, why};
+    }
+
+    // TTS Setup
+    function setVoice(text, lang='en-GB'){
+        if(!speechSupported) return false;
+        try {
+            speechSynthesis.cancel(); // Bersihkan antrean
+            if(window.speechSynthesis.resume) window.speechSynthesis.resume(); // Pancing browser agar tidak nyangkut (Bug fix)
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = lang;
+            u.rate = lang === 'id-ID' ? 0.94 : 0.88;
+            u.pitch = 1.02;
+            let voices = speechSynthesis.getVoices();
+            let preferred = voices.find(v => v.lang.toLowerCase() === lang.toLowerCase()) || voices.find(v => v.lang.toLowerCase().startsWith(lang.split('-')[0].toLowerCase()));
+            if(preferred) u.voice = preferred;
+            speechSynthesis.speak(u);
+            return true;
+        } catch(e) { return false; }
+    }
+
+    function speakParts(parts){
+        if(!speechSupported){
+            $('speechStatus').textContent = 'Suara tutor tidak tersedia pada browser ini. Baca koreksi di layar.';
+            return;
+        }
+        speechSynthesis.cancel(); // Bersihkan antrean suara lama
+        if(window.speechSynthesis.resume) window.speechSynthesis.resume(); // Pancing browser (Bug fix)
+        let i = 0;
+        function next(){
+            if(i >= parts.length) return;
+            let p = parts[i++], u = new SpeechSynthesisUtterance(p.text);
+            u.lang = p.lang || 'en-GB';
+            u.rate = p.rate || 0.88;
+            let voices = speechSynthesis.getVoices();
+            let pref = voices.find(v => v.lang.toLowerCase() === u.lang.toLowerCase()) || voices.find(v => v.lang.toLowerCase().startsWith(u.lang.split('-')[0].toLowerCase()));
+            if(pref) u.voice = pref;
+            u.onend = next;
+            u.onerror = next;
+            speechSynthesis.speak(u);
+        }
+        next();
+    }
+
+    function defaultParts(item, grade){
+        let name = $('studentName').value.trim();
+        let hello = name ? name + ', ' : ' ';
+        if(grade.ok){
+            return [
+                {text: 'Excellent, ' + (name||'well done') + '! That is a good answer. Keep it up!', lang: 'en-GB'},
+                {text: 'Bagus! Pola grammar utama sudah sesuai.', lang: 'id-ID'},
+                {text: 'One useful model answer is: ' + item.model, lang: 'en-GB'}
+            ];
+        }
+        return [
+            {text: 'Good try, ' + (name||'student') + '! Mistakes help us learn. Let us correct it together.', lang: 'en-GB'},
+            {text: 'A better example is: ' + item.model, lang: 'en-GB'},
+            {text: item.explain, lang: 'id-ID'},
+            {text: 'Now, please say the example again.', lang: 'en-GB'}
+        ];
+    }
+
+    // UI Updates
+    function updateStats(){
+        let total = session.length || bank.length;
+        let done = Object.keys(answers).filter(k => answers[k] && answers[k].trim()).length;
+        let correct = Object.values(grades).filter(g => g && g.ok).length;
+        
+        $('doneStat').textContent = done + '/' + total;
+        $('correctStat').textContent = correct;
+        $('streakStat').textContent = streak;
+        
+        let progressPct = (pos + 1) / total * 100;
+        $('progressBar').style.width = progressPct + '%';
+        $('questionCount').textContent = 'Soal ' + (pos + 1) + ' dari ' + total;
+    }
+
+    function renderTopics(){
+        let box = $('topicList');
+        box.innerHTML = '';
+        Object.entries(topicNames).filter(([k]) => k !== 'all').forEach(([key, label]) => {
+            let count = bank.filter(x => x.topic === key).length;
+            let b = document.createElement('button');
+            b.type = 'button';
+            let isActive = $('topicSelect').value === key;
+            
+            b.className = `text-left w-full p-2.5 rounded-xl text-sm font-bold flex justify-between items-center transition-colors border ${isActive ? 'bg-teal-50 border-teal-200 text-teal-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'}`;
+            b.innerHTML = `<span>${label}</span><span class="bg-slate-100 text-slate-500 py-0.5 px-2 rounded-md text-xs">${count}</span>`;
+            b.addEventListener('click', () => { $('topicSelect').value = key; beginSession(); });
+            box.appendChild(b);
+        });
+    }
+
+    function current(){ return session[pos]; }
+
+    function render(){
+        if(!session.length) return;
+        const item = current();
+        
+        $('sectionTag').textContent = item.section;
+        $('questionText').textContent = item.q;
+        $('grammarRule').innerHTML = item.rule;
+        $('answerText').value = answers[item.id] || '';
+        
+        // Reset Example Block
+        $('exampleContent').classList.add('hidden');
+        $('toggleExampleBtn').textContent = 'Tampilkan';
+        $('exampleTextDisplay').textContent = item.model;
+        
+        // Hide feedback
+        $('feedback').classList.add('hidden');
+        $('feedback').classList.remove('bg-green-50', 'border-green-200', 'bg-amber-50', 'border-amber-200');
+        $('manualControls').classList.add('hidden');
+        $('modelText').textContent = '';
+        $('explanationText').textContent = '';
+        
+        // Mode specific UI
+        $('coachPrompt').innerHTML = $('mode').value === 'test' 
+            ? '<strong class="block text-slate-900 mb-1">Mock Test</strong>Listen carefully and answer without looking at the example. The tutor will give feedback after you submit.' 
+            : '<strong class="block text-slate-900 mb-1">Let’s practise!</strong>Listen to the question, then answer in your own words. You can make mistakes here.';
+        
+        $('prevBtn').disabled = pos === 0;
+        $('nextBtn').textContent = pos === session.length - 1 ? 'Lihat hasil →' : 'Berikutnya →';
+        
+        let gradeStatus = grades[item.id] ? (grades[item.id].ok ? 'Sudah diperiksa · pola sesuai' : 'Sudah diperiksa · perlu latihan ulang') : 'Jawaban tersimpan selama sesi ini.';
+        $('progressText').textContent = gradeStatus;
+        
+        updateStats();
+        renderTopics();
+    }
+
+    function beginSession(){
+        stopListening();
+        if(speechSupported) {
+            speechSynthesis.cancel();
+            if(window.speechSynthesis.resume) window.speechSynthesis.resume(); // Pastikan API aktif saat ditekan mulai
+        }
+        
+        let topic = $('topicSelect').value;
+        session = bank.filter(x => topic === 'all' || x.topic === topic);
+        pos = 0;
+        answers = {};
+        grades = {};
+        streak = 0;
+        started = true;
+        
+        $('setupSection').classList.add('hidden');
+        $('resultsPanel').classList.add('hidden');
+        $('workspace').classList.remove('hidden');
+        
+        render();
+        $('coachPrompt').innerHTML = '<strong class="block text-slate-900 mb-1">Welcome to your speaking session!</strong>Let’s speak English together. Press “Dengarkan soal” when you are ready.';
+        
+        setTimeout(() => {
+            if(speechSupported) setVoice('Hello ' + ($('studentName').value.trim()||'there') + '. Welcome to your English speaking practice. Let us begin!', 'en-GB');
+        }, 120);
+    }
+
+    function showFeedback(item, grade, manual){
+        let fb = $('feedback');
+        fb.classList.remove('hidden', 'bg-green-50', 'border-green-200', 'bg-amber-50', 'border-amber-200', 'text-green-900', 'text-amber-900');
+        
+        $('manualControls').classList.toggle('hidden', !manual && !grades[item.id]);
+        
+        if(grade.ok){
+            fb.classList.add('bg-green-50', 'border-green-200', 'text-green-900');
+            $('feedbackTitle').textContent = '⭐ Excellent! Well done!';
+            $('feedbackText').textContent = 'Jawabanmu menunjukkan pola grammar target. Keep it up!';
+        } else {
+            fb.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-900');
+            $('feedbackTitle').textContent = '🌱 Good try! Let’s improve it.';
+            $('feedbackText').textContent = 'Belum cocok dengan pola yang dicari. Tidak apa-apa, dengarkan contoh dan coba ulangi.';
+        }
+        
+        $('modelText').textContent = 'Example: ' + item.model;
+        $('explanationText').textContent = item.explain + (manual ? ' (Penilaian ditentukan tutor/orang tua.)' : '');
+        $('speechStatus').textContent = 'Tutor sedang menyiapkan masukan suara…';
+        
+        lastFeedbackSpeech = defaultParts(item, grade);
+        $('manualControls').classList.remove('hidden');
+        
+        speakParts(lastFeedbackSpeech);
+        
+        $('speechStatus').textContent = speechSupported ? 'Tutor akan menyampaikan pujian/koreksi dalam bahasa Inggris dan penjelasan dalam Bahasa Indonesia.' : 'Suara tidak tersedia; masukan tertulis ada di atas.';
+        
+        updateStats();
+        $('progressText').textContent = grade.ok ? 'Sudah diperiksa · pola sesuai' : 'Sudah diperiksa · perlu latihan ulang';
+    }
+
+    function checkAnswer(){
+        const item = current(), raw = $('answerText').value.trim();
+        answers[item.id] = raw;
+        
+        if(!raw){
+            let fb = $('feedback');
+            fb.classList.remove('hidden');
+            fb.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-900');
+            $('feedbackTitle').textContent = 'Let’s give it a try!';
+            $('feedbackText').textContent = 'Jawab dulu dengan suara atau ketik kalimat bahasa Inggris. Tutor akan membantu setelah kamu mencoba.';
+            $('modelText').textContent = '';
+            $('explanationText').textContent = '';
+            speakParts([{text:'Come on, give it a try. You can do it!', lang:'en-GB'}]);
+            return;
+        }
+        
+        const grade = evaluate(item, raw);
+        grades[item.id] = grade;
+        streak = grade.ok ? streak + 1 : 0;
+        showFeedback(item, grade, false);
+    }
+
+    function sayFeedback(){
+        if(lastFeedbackSpeech.length) speakParts(lastFeedbackSpeech);
+    }
+
+    function repeatModel(){
+        const item = current();
+        $('answerText').value = '';
+        answers[item.id] = '';
+        $('feedback').classList.add('hidden');
+        $('answerText').focus();
+        speakParts([
+            {text: 'Listen and repeat: ' + item.model, lang: 'en-GB'},
+            {text: 'Sekarang, coba ucapkan kalimat itu sendiri.', lang: 'id-ID'}
+        ]);
+    }
+
+    function go(delta){
+        if(!started) return;
+        if(pos + delta < 0) return;
+        if(pos + delta >= session.length){ finish(); return; }
+        pos += delta;
+        render();
+    }
+
+    function finish(){
+        stopListening();
+        if(speechSupported) speechSynthesis.cancel();
+        
+        $('resultsPanel').classList.remove('hidden');
+        $('workspace').classList.add('hidden');
+        
+        let total = session.length;
+        let done = session.filter(i => answers[i.id] && answers[i.id].trim()).length;
+        let correct = session.filter(i => grades[i.id] && grades[i.id].ok).length;
+        let pct = done ? Math.round((correct/total)*100) : 0;
+        
+        $('resultsTitle').textContent = pct >= 80 ? 'Fantastic work! Keep shining!' : pct >= 50 ? 'Good progress. Keep practising!' : 'Every attempt helps you improve!';
+        $('resultsSummary').textContent = ($('studentName').value.trim()||'You') + ' menyelesaikan ' + done + ' dari ' + total + ' soal. ' + correct + ' jawaban memenuhi pola grammar yang diperiksa. Skor otomatis: ' + pct + '% (dihitung dari seluruh soal dalam sesi).';
+        
+        let list = $('resultList');
+        list.innerHTML = '';
+        session.forEach((it, i) => {
+            let g = grades[it.id];
+            let isOk = g && g.ok;
+            
+            let el = document.createElement('div');
+            el.className = 'flex gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100';
+            
+            let icon = document.createElement('div');
+            icon.className = `w-10 h-10 shrink-0 rounded-full flex items-center justify-center font-bold text-lg ${isOk ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`;
+            icon.textContent = g ? (g.ok ? '✓' : '↻') : '—';
+            
+            let body = document.createElement('div');
+            body.className = 'text-sm';
+            body.innerHTML = `
+                <strong class="block text-slate-800 text-base mb-1">${i+1}. ${it.q}</strong>
+                <div class="text-slate-600 mb-1"><span class="font-bold">Jawaban siswa:</span> ${answers[it.id] || '(belum dijawab)'}</div>
+                <div class="text-teal-700 mb-1"><span class="font-bold">Contoh:</span> ${it.model}</div>
+                <div class="text-xs font-bold ${isOk ? 'text-green-600' : 'text-amber-600'}">${g ? (g.ok ? 'Pola sesuai' : 'Perlu ditinjau') : 'Belum diperiksa'}</div>
+            `;
+            
+            el.appendChild(icon);
+            el.appendChild(body);
+            list.appendChild(el);
+        });
+        
+        $('resultsPanel').scrollIntoView({behavior:'smooth', block:'start'});
+        speakParts([
+            {text: 'Well done for finishing your speaking test. Every practice makes you better.', lang: 'en-GB'},
+            {text: 'Sesi selesai. Periksa kembali contoh jawaban untuk materi yang masih sulit.', lang: 'id-ID'}
+        ]);
+    }
+
+    function startListening(){
+        if(!recognitionSupported){
+            $('browserNotice').scrollIntoView({behavior:'smooth', block:'nearest'});
+            $('answerText').focus();
+            return;
+        }
+        if(!started) beginSession();
+        stopListening();
+        
+        try {
+            rec = new SpeechRecognition();
+            rec.lang = 'en-GB';
+            rec.interimResults = true;
+            rec.continuous = false;
+            rec.maxAlternatives = 1;
+            listening = true;
+            
+            $('micBtn').disabled = true;
+            $('stopMicBtn').disabled = false;
+            $('listeningState').classList.remove('hidden');
+            
+            let base = $('answerText').value.trim();
+            
+            rec.onresult = e => {
+                let finalText = '', interim = '';
+                for(let i = e.resultIndex; i < e.results.length; i++){
+                    let t = e.results[i][0].transcript;
+                    if(e.results[i].isFinal) finalText += t;
+                    else interim += t;
+                }
+                if(finalText){
+                    $('answerText').value = (base ? base + ' ' : '') + (finalText.trim());
+                    answers[current().id] = $('answerText').value;
+                } else if(interim){
+                    $('answerText').placeholder = 'Mendengar: ' + interim;
+                }
+            };
+            
+            rec.onerror = e => {
+                if(e.error !== 'no-speech' && e.error !== 'aborted'){
+                    $('speechStatus').textContent = 'Mikrofon: ' + e.error + '. Kamu bisa mengetik jawaban.';
+                }
+            };
+            
+            rec.onend = () => {
+                listening = false;
+                $('micBtn').disabled = false;
+                $('stopMicBtn').disabled = true;
+                $('listeningState').classList.add('hidden');
+                $('answerText').placeholder = 'Jawabanmu akan muncul di sini setelah berbicara. Kamu juga bisa mengetik jawaban...';
+                $('answerText').focus();
+            };
+            
+            rec.start();
+        } catch(e) {
+            stopListening();
+            $('browserNotice').textContent = 'Mikrofon belum dapat dimulai. Izinkan akses mikrofon atau ketik jawaban di kotak teks.';
+            $('browserNotice').classList.remove('hidden');
+        }
+    }
+
+    function stopListening(){
+        if(rec){
+            try { rec.onend = null; rec.stop(); } catch(e){}
+            rec = null;
+        }
+        listening = false;
+        $('micBtn').disabled = false;
+        $('stopMicBtn').disabled = true;
+        $('listeningState').classList.add('hidden');
+    }
+
+    // Event Listeners
+    $('startBtn').addEventListener('click', beginSession);
+    $('howBtn').addEventListener('click', () => $('howText').classList.toggle('hidden'));
+    
+    $('speakQuestion').addEventListener('click', () => {
+        if(!started) beginSession();
+        let item = current();
+        speakParts([
+            {text: item.q, lang: 'en-GB'},
+            {text: 'Silakan jawab dalam bahasa Inggris.', lang: 'id-ID'}
+        ]);
+    });
+    
+    $('micBtn').addEventListener('click', startListening);
+    $('stopMicBtn').addEventListener('click', stopListening);
+    $('checkBtn').addEventListener('click', checkAnswer);
+    
+    // Example Block Toggle & Speak
+    $('toggleExampleBtn').addEventListener('click', () => {
+        const content = $('exampleContent');
+        if(content.classList.contains('hidden')){
+            content.classList.remove('hidden');
+            $('toggleExampleBtn').textContent = 'Sembunyikan';
+        } else {
+            content.classList.add('hidden');
+            $('toggleExampleBtn').textContent = 'Tampilkan';
+        }
+    });
+    
+    $('speakExampleBtn').addEventListener('click', () => {
+        const item = current();
+        speakParts([
+            {text: item.model, lang: 'en-GB'}
+        ]);
+    });
+
+    $('sayFeedbackBtn').addEventListener('click', sayFeedback);
+    $('repeatModelBtn').addEventListener('click', repeatModel);
+    $('repeatBtn').addEventListener('click', repeatModel);
+    $('prevBtn').addEventListener('click', () => go(-1));
+    $('nextBtn').addEventListener('click', () => go(1));
+    
+    $('restartBtn').addEventListener('click', () => {
+        $('setupSection').classList.remove('hidden');
+        $('resultsPanel').classList.add('hidden');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    
+    $('reviewBtn').addEventListener('click', () => {
+        $('resultList').classList.toggle('hidden');
+        $('reviewBtn').textContent = $('resultList').classList.contains('hidden') ? 'Tinjau jawaban' : 'Sembunyikan tinjauan';
+    });
+    
+    $('topicSelect').addEventListener('change', renderTopics);
+    $('answerText').addEventListener('input', () => {
+        if(started) answers[current().id] = $('answerText').value;
+    });
+    
+    // Manual Overrides
+    $('markCorrectBtn').addEventListener('click', () => {
+        const item = current();
+        grades[item.id] = {ok: true, manual: true};
+        streak = streak + 1;
+        showFeedback(item, {ok: true}, true);
+    });
+    
+    $('markRetryBtn').addEventListener('click', () => {
+        const item = current();
+        grades[item.id] = {ok: false, manual: true};
+        streak = 0;
+        showFeedback(item, {ok: false}, true);
+    });
+
+    // Init
+    renderTopics();
+    
+    // Setup speechSynthesis Voices loader
+    if (speechSupported && window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => {}; // Force load voices early
+    }
+})();
+</script>
+</body>
+</html>
